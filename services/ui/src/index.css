@@ -222,6 +222,28 @@ h1 {
   margin-right: 0.5rem;
 }
 
+.sort-option {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-option label {
+  font-size: 14px;
+  color: #424245;
+  font-weight: 500;
+}
+
+.sort-select {
+  padding: 4px 8px;
+  border: 1px solid #e5e5e7;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  color: #424245;
+}
+
 .result-header {
   display: flex;
   justify-content: space-between;

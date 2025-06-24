@@ -36,7 +36,7 @@ export class SearchService {
     }
   }
 
-  async searchTickets(query: string, filterUnresolved: boolean = false) {
+  async searchTickets(query: string, filterUnresolved: boolean = false, sortOrder: string = 'priority-high-to-low') {
     try {
       const mustClauses = [];
       const shouldClauses = [];
@@ -92,12 +92,12 @@ export class SearchService {
               }
             ],
             filter: filterClauses,
-            minimum_should_match: 0
+            minimum_should_match: 4
           }
         },
         sort: [
           { _score: { order: 'asc' as const } },
-          { priority: { order: 'desc' as const } },
+          { priority: { order: sortOrder === 'priority-high-to-low' ? 'desc' as const : 'asc' as const } },
           { created_date: { order: 'asc' as const } }
         ],
         highlight: {

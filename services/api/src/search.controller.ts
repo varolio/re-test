@@ -8,14 +8,15 @@ export class SearchController {
   @Get('search')
   async search(
     @Query('q') query: string,
-    @Query('filterUnresolved') filterUnresolved: string
+    @Query('filterUnresolved') filterUnresolved: string,
+    @Query('sortOrder') sortOrder: string
   ) {
     if (!query) {
       return { results: [], error: 'Query parameter is required' };
     }
     
     const filter = filterUnresolved === 'true';
-    return await this.searchService.searchTickets(query, filter);
+    return await this.searchService.searchTickets(query, filter, sortOrder);
   }
 
   @Get('ready')

@@ -9,6 +9,7 @@ function App() {
   const [systemReady, setSystemReady] = useState(false);
   const [filterUnresolved, setFilterUnresolved] = useState(false);
   const [updating, setUpdating] = useState({});
+  const [sortOrder, setSortOrder] = useState('priority-high-to-low');
 
   useEffect(() => {
     const checkReady = async () => {
@@ -31,12 +32,31 @@ function App() {
     return () => clearInterval(interval);
   }, [results.length]);
 
+  useEffect(() => {
+    // Only reload when sort order changes and we already have results
+    if (systemReady && results.length > 0) {
+      const reloadWithNewSort = async () => {
+        setLoading(true);
+        try {
+          const searchQuery = query.trim() || '*';
+          const response = await axios.get(`/search?q=${encodeURIComponent(searchQuery)}&filterUnresolved=${filterUnresolved}&sortOrder=${sortOrder}`);
+          setResults(response.data.results || []);
+        } catch (err) {
+          setError('Failed to reload tickets with new sort order.');
+        } finally {
+          setLoading(false);
+        }
+      };
+      reloadWithNewSort();
+    }
+  }, [sortOrder]);
+
   const loadAllTickets = async () => {
     setLoading(true);
     setError('');
     
     try {
-      const response = await axios.get(`/search?q=*&filterUnresolved=${filterUnresolved}`);
+      const response = await axios.get(`/search?q=*&filterUnresolved=${filterUnresolved}&sortOrder=${sortOrder}`);
       setResults(response.data.results || []);
     } catch (err) {
       setError('Failed to load tickets. Please try again.');
@@ -55,7 +75,7 @@ function App() {
     try {
       // Use * for empty queries to show all tickets
       const searchQuery = query.trim() || '*';
-      const response = await axios.get(`/search?q=${encodeURIComponent(searchQuery)}&filterUnresolved=${filterUnresolved}`);
+      const response = await axios.get(`/search?q=${encodeURIComponent(searchQuery)}&filterUnresolved=${filterUnresolved}&sortOrder=${sortOrder}`);
       setResults(response.data.results || []);
     } catch (err) {
       setError('Failed to search. Please try again.');
@@ -103,6 +123,19 @@ function App() {
     return { __html: highlighted };
   };
 
+  const getPriorityLabel = (priority) => {
+    switch (priority) {
+      case 1:
+        return 'High';
+      case 2:
+        return 'Medium';
+      case 3:
+        return 'Low';
+      default:
+        return `P${priority}`;
+    }
+  };
+
   return (
     <div className="container">
       <h1>Support Ticket Search</h1>
@@ -135,6 +168,19 @@ function App() {
               />
               Show only unresolved tickets
             </label>
+            
+            <div className="sort-option">
+              <label htmlFor="sort-select">Sort by priority:</label>
+              <select
+                id="sort-select"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+                className="sort-select"
+              >
+                <option value="priority-high-to-low">High to Low</option>
+                <option value="priority-low-to-high">Low to High</option>
+              </select>
+            </div>
           </div>
         </form>
 
@@ -163,8 +209,8 @@ function App() {
                     result.title
                   )}
                 </h3>
-                <span className="priority-badge priority-{result.priority}">
-                  P{result.priority}
+                <span className={`priority-badge priority-${result.priority}`}>
+                  {getPriorityLabel(result.priority)}
                 </span>
               </div>
               
