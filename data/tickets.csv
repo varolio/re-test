@@ -1,0 +1,11 @@
+ticket_id,title,description,customer_email,tags,created_date,status,priority,category
+T001,Cannot login to account,User reports being unable to access their account after password reset,john.doe@example.com,login password authentication,2024-01-15T10:30:00,open,1,authentication
+T002,Billing discrepancy,Customer noticed incorrect charge on monthly invoice,jane.smith@example.com,billing payment invoice,2024-01-16T14:20:00,resolved,2,billing
+T003,Feature request - dark mode,Customer requesting dark mode for mobile app,john.doe@example.com,feature mobile ui,2024-01-17T09:15:00,pending,4,feature
+T004,Slow performance issues,Application running slowly on Chrome browser,mike.wilson@example.com,performance browser technical,2024-01-18T11:45:00,investigating,2,performance
+T005,Data export not working,Unable to export data to CSV format,jane.smith@example.com,export data technical,2024-01-19T16:30:00,open,1,technical
+T006,Password reset email not received,Customer did not receive password reset email,sarah.johnson@example.com,email password authentication,2024-01-20T13:10:00,resolved,2,authentication
+T007,API rate limit questions,Developer asking about API rate limits,dev@techcorp.com,api technical documentation,2024-01-21T10:00:00,closed,3,api
+T008,Account suspension inquiry,Customer asking why account was suspended,john.doe@example.com,account security compliance,2024-01-22T15:20:00,open,1,security
+T009,Mobile app crashes,App crashes when uploading large files,jane.smith@example.com,mobile crash technical,2024-01-23T08:45:00,open,1,mobile
+T010,Subscription renewal failed,Unable to renew subscription with saved card,mike.wilson@example.com,billing subscription payment,2024-01-24T12:00:00,open,2,billing 

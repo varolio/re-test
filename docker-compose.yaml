@@ -1,0 +1,56 @@
+services:
+  elasticsearch:
+    image: elasticsearch:8.12.2
+    container_name: es-support
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  indexer:
+    build: ./services/indexer
+    container_name: python-indexer
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    ports:
+      - "5001:5000"
+    environment:
+      - ES_HOST=elasticsearch
+      - ES_PORT=9200
+    volumes:
+      - ./data:/data:ro
+
+  api:
+    build: ./services/api
+    container_name: nestjs-api
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+    environment:
+      - ES_HOST=elasticsearch
+      - ES_PORT=9200
+
+  ui:
+    build: ./services/ui
+    container_name: react-ui
+    ports:
+      - "3000:3000"
+    environment:
+      - API_URL=http://localhost:3001
+    depends_on:
+      - api
+
+volumes:
+  es-data: 
